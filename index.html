@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Submit multiple form using jquery and ajax</title>
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+ <style>
+  .ui-autocomplete-loading {
+    background: white url("img/ui-anim_basic_16x16.gif") right center no-repeat;
+  }
+  </style>
+</head>
+<body>
+<h3>Submit multiple form using jquery and ajax</h3>
+	<div >
+	<b>Form-1</b>
+	<form id="form1">
+	<table border=1><tr><td height=100><ul class="msgBox"></ul></td></tr>
+  <tr><td>
+  <input type="hidden" name="fname" value="form1"> 
+  <input type="text" name="name" placeholder="Enter Name" required="required"> 
+  <input type="text" name="msg" placeholder="Enter Msg" required="required">
+   <button type="button">Submit</button> 
+  </td></tr></table></form>
+</div>
+<br/>
+<div >
+	<b>Form-2</b>
+	<form id="form2">
+	<table border=1><tr><td height=100><ul class="msgBox"></ul></td></tr>
+  <tr><td>
+  <input type="hidden" name="fname" value="form2">
+  <input type="text" name="name" placeholder="Enter Name" required="required"> 
+  <input type="text" name="msg" placeholder="Enter Msg" required="required">
+  <button type="button">Submit</button> 
+  </td></tr></table></form>
+</div>
+  <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script>
+  $(function() {
+     $("button").click(function() {
+     	var formID = $(this).closest('form').attr('id');
+     	var formData = $("#"+formID).serialize();
+     	if($("#"+formID)[0].checkValidity()) {
+     	 $.ajax({
+          url: "request.php",
+          dataType: "json",
+          data: formData,
+          success: function( data ) {
+             // Handle success here
+              if(data.fname == 'form1') {
+                $("#"+formID+" .msgBox").append("<li><b>"+data.name+": </b> "+data.msg+"</li>");
+                 $("#"+formID+" input[name='msg']").val('');
+              } else if(data.fname == 'form2') {
+                $("#"+formID+" .msgBox").append("<li><b>"+data.name+": </b> "+data.msg+"</li>");
+                $("#"+formID+" input[name='msg']").val('');
+              }
+
+          },
+          error: function(e) {
+          	// Handle error here
+          	console.log(e);
+          },
+          timeout: 30000  
+        });
+       } else {
+       	alert("Please enter name and message");
+       }
+     });
+  });
+  </script>
+</body>
+</html>
